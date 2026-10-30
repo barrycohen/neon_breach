@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neon Breach</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+<canvas id="view"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="scan"></div>
+  <div id="cross"><i class="v up"></i><i class="v dn"></i><i class="h lf"></i><i class="h rt"></i><i class="dot"></i></div>
+  <div id="hitmark"><span></span><span></span></div>
+  <div id="vig"></div>
+  <div id="vigShield"></div>
+  <div id="dmgflash"></div>
+  <div id="aimhint" class="hidden">FREE AIM &middot; POINTER LOCK UNAVAILABLE &middot; PUSH THE CURSOR TO A SCREEN EDGE TO TURN</div>
+  <div id="countdown"></div>
+  <div id="doorPrompt"></div>
+  <div id="banner"><b id="bannerTitle"></b><em id="bannerSub"></em></div>
+  <div id="bannerQuiet"><b id="bqTitle"></b><em id="bqSub"></em></div>
+
+  <div id="compass"><div id="compassTape"></div><div id="compassNeedle"></div></div>
+  <div class="panel" id="pStats">
+    <div class="row"><span class="lbl">SCORE</span><span class="val" id="score">0</span></div>
+    <div class="row" id="waveRow"><span class="lbl">WAVE</span><span class="val" id="waveN">1</span></div>
+    <div id="levelTag" hidden><b id="levelName"></b><span id="levelSub"></span></div>
+    <div id="combo">x1</div>
+  </div>
+
+  <div id="bossbar" class="hidden">
+    <div class="blabel" id="bosslabel">WARDEN &middot; SECTOR CORE</div>
+    <div class="bar boss" id="bossbars"></div>
+  </div>
+
+  <div class="panel" id="pThreat">
+    <div id="arenaTag" hidden><i></i>LOCKED</div>
+    <div id="powerTag" hidden>CORE POWER <b>0%</b></div>
+    <div class="row"><span class="lbl">HOSTILES</span><span class="val" id="left">0</span></div>
+    <div id="feed"></div>
+  </div>
+
+  <div class="panel" id="pVitals">
+    <div id="vitalAlert"></div>
+    <div class="vrow"><span class="lbl">INTEGRITY</span><span class="val" id="hpn">100</span></div>
+    <div class="bar"><span id="hpbar"></span></div>
+    <div class="vrow"><span class="lbl">SHIELD</span><span class="val" id="shn">100</span></div>
+    <div class="bar sh"><span id="shbar"></span></div>
+    <div class="lbl" style="font-size:10px">THRUSTERS</div>
+    <div id="dashpips"><i></i><i></i></div>
+  </div>
+
+  <div class="panel" id="pWeapon">
+    <div id="wname">PULSE</div>
+    <div id="ammo"><b id="mag">36</b><span id="res">/ &#8734;</span></div>
+    <div id="wlist"></div>
+    <div id="keys"></div>
+    <div id="reloading" class="hidden">RELOADING</div>
+  </div>
+</div>
+
+<div class="panel hidden" id="pFps"><span id="fpsval">--</span> FPS <span id="fpsms"></span><span id="fpspos"></span></div>
+
+<div id="menu" class="screen">
+  <div class="mtitle">NEON<span>BREACH</span></div>
+  <div class="msub">SECTOR 7 &middot; ORBITAL DEFENSE GRID &middot; HOLD THE ARENA</div>
+  <div class="mgrid" id="ctrlSummary"></div>
+  <div class="mrow"><button class="cta ghost" id="ctrlBtn">CONFIGURE CONTROLS</button></div>
+  <div class="mrow"><label>SENSITIVITY <input id="sens" type="range" min="20" max="320" value="100"></label><b id="sensv">1.00</b></div>
+  <div class="mrow"><label for="invert">INVERT MOUSE Y</label><input id="invert" type="checkbox"><b id="invertv">OFF</b></div>
+  <div class="mrow" id="bloomRow"><label for="bloom">BLOOM</label><input id="bloom" type="checkbox"><b id="bloomv">ON</b></div>
+  <div class="mrow"><label for="shad">SHADOWS</label><input id="shad" type="checkbox"><b id="shadv">ON</b></div>
+  <div class="mrow"><label for="fpsc">FPS COUNTER</label><input id="fpsc" type="checkbox"><b id="fpsv">OFF</b></div>
+  <div class="mrow" style="gap:14px">
+    <button class="cta" id="campaignBtn">CAMPAIGN</button>
+    <button class="cta ghost" id="startBtn">ENDLESS ARENA</button>
+  </div>
+  <div class="mfoot">BEST SCORE <b id="best">0</b> &middot; KEEP MOVING &middot; THE GRID DOES NOT FORGIVE</div>
+  <div class="mfoot">DROPS &mdash; <b style="color:#8dff6a">GREEN CROSS</b> RESTORES INTEGRITY &middot; <b style="color:#ffc24d">AMBER CELL</b> RESUPPLIES SCATTER + RAIL</div>
+  <div class="mfoot" id="assetNote" style="letter-spacing:.24em;color:#5df0ff;opacity:.65"></div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <div class="mtitle" style="font-size:clamp(30px,6vw,58px)">PAUSED</div>
+  <div class="mrow"><label>SENSITIVITY <input id="sens2" type="range" min="20" max="320" value="100"></label><b id="sensv2">1.00</b></div>
+  <div class="mrow"><label for="invert2">INVERT MOUSE Y</label><input id="invert2" type="checkbox"><b id="invertv2">OFF</b></div>
+  <div class="mrow" id="bloomRow2"><label for="bloom2">BLOOM</label><input id="bloom2" type="checkbox"><b id="bloomv2">ON</b></div>
+  <div class="mrow"><label for="shad2">SHADOWS</label><input id="shad2" type="checkbox"><b id="shadv2">ON</b></div>
+  <div class="mrow"><label for="fpsc2">FPS COUNTER</label><input id="fpsc2" type="checkbox"><b id="fpsv2">OFF</b></div>
+  <div class="mrow"><button class="cta ghost" id="ctrlBtn2">CONFIGURE CONTROLS</button></div>
+  <button class="cta" id="resumeBtn">RESUME</button>
+  <button class="cta ghost" id="abortBtn">ABORT RUN</button>
+  <div class="mfoot">ESC OR CLICK TO RESUME</div>
+</div>
+
+<div id="brief" class="screen hidden">
+  <div class="mtitle" id="briefTitle" style="font-size:clamp(30px,6vw,60px)">TITLE</div>
+  <div class="msub" id="briefSub" style="max-width:640px;line-height:1.9">SUB</div>
+  <div class="mfoot" id="briefGo" style="opacity:0">PRESS ANY KEY TO CONTINUE</div>
+</div>
+
+<div id="campaign" class="screen hidden">
+  <div class="mtitle" style="font-size:clamp(28px,5vw,50px)">CAMPAIGN</div>
+  <div class="msub" id="campSub">SECTOR DESCENT</div>
+  <div id="campList"></div>
+  <button class="cta ghost" id="campBack">BACK</button>
+</div>
+
+<div id="levelDone" class="screen hidden">
+  <div class="mtitle" id="doneTitle" style="font-size:clamp(26px,4.6vw,44px)">CORE SECURED</div>
+  <div class="msub" id="doneName">SECTOR 1-1</div>
+  <div class="stats">
+    <div><s>TIME</s><t id="doneTime">0:00</t></div>
+    <div><s>HOSTILES DOWN</s><t id="doneKills">0</t></div>
+    <div><s>INTEGRITY LEFT</s><t id="doneHp">100</t></div>
+    <div><s>DEATHS</s><t id="doneDeaths">0</t></div>
+  </div>
+  <div class="msub" id="doneUnlock" style="color:var(--lime);min-height:16px"></div>
+  <div class="mrow" style="gap:14px">
+    <button class="cta" id="doneNext">NEXT SECTOR</button>
+    <button class="cta ghost" id="doneMenu">CAMPAIGN</button>
+  </div>
+</div>
+
+<div id="controls" class="screen hidden">
+  <div class="mtitle" style="font-size:clamp(26px,5vw,46px)">CONTROLS</div>
+  <div class="msub">CLICK A KEY TO REBIND &middot; ESC CANCELS</div>
+  <div class="presets">
+    <button class="cta ghost" data-preset="WASD">WASD LAYOUT</button>
+    <button class="cta ghost" data-preset="ESDF">ESDF LAYOUT</button>
+  </div>
+  <div id="bindGrid"></div>
+  <div class="msub" id="bindWarn" style="color:var(--amber);min-height:14px"></div>
+  <button class="cta" id="ctrlBack">BACK</button>
+</div>
+
+<div id="over" class="screen hidden">
+  <div class="mtitle dead" style="font-size:clamp(32px,7vw,74px)">GRID LOST</div>
+  <div class="msub" id="overSub">SYSTEMS OFFLINE</div>
+  <div class="stats">
+    <div><s>SCORE</s><t id="oScore">0</t></div>
+    <div><s>WAVES CLEARED</s><t id="oWave">0</t></div>
+    <div><s>HOSTILES DOWN</s><t id="oKills">0</t></div>
+    <div><s>ACCURACY</s><t id="oAcc">0%</t></div>
+    <div><s>BEST COMBO</s><t id="oCombo">x1</t></div>
+    <div><s>TIME</s><t id="oTime">0:00</t></div>
+  </div>
+  <button class="cta" id="againBtn">REDEPLOY</button>
+  <div class="mfoot">PRESS <b>R</b> TO REDEPLOY</div>
+</div>
+
+<div id="loading">INITIALIZING GRID</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/MaskPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

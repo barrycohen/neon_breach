@@ -1,0 +1,10 @@
+# the build output (python3 build.py); GitHub Pages builds its own
+dist/
+
+# editor / OS noise
+.DS_Store
+*.swp
+.vscode/
+.idea/
+.claude/
+__pycache__/
