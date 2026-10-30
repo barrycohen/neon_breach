@@ -1301,7 +1301,7 @@ function addMolten(h){
 function addCascade(h){
   const [x,y,z]=h.p, [w,hh]=h.s, LT=lavaTex(), tile=9;
   const tex=c=>{ const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(w/tile,hh/tile*0.5); return t; };
-  const mat=new THREE.MeshBasicMaterial({color:0xffffff, map:tex(LT.base), side:THREE.DoubleSide, transparent:true, fog:false});
+  const mat=new THREE.MeshBasicMaterial({color:0xffffff, map:tex(LT.base), side:THREE.DoubleSide, transparent:true});
   mat.__perObject=true;
   const m=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),mat);
   m.position.set(x,y+hh/2,z); if(h.across==='z') m.rotation.y=Math.PI/2;

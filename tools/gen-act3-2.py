@@ -216,6 +216,9 @@ L(breach(26, 51, 15, 1.6, 1.6, 1.6, id='cageclamp', do=[{'a': 'fall', 'id': 'cag
 for cx in (23.4, 28.6):
     for cz in (12.4, 17.6):
         CABLES.append({'a': [cx, WALK, cz], 'b': [26, 51, 15], 'cut': {'fall': 'cage'}})
+# an arrow up the shaft's far wall, in front of you as you step on: the clamp
+# over your head is what to break
+SIGNS = [{'p': [26, 47.2, 12.03], 'face': 'z', 's': [2.6, 3.2], 'arrow': 'up'}]
 # the bottom room x 23..33 z -20..11, at 28, two storeys: a ledge at 34 across
 # its south end, where the cage stops, solid to the floor, and the rest open
 # to the roof. One hard wave, from the floor and the air: fight it from the
@@ -629,6 +632,7 @@ LEVEL = {
  'geometry': G,
  'falls': FALLS,
  'cables': CABLES,
+ 'signs': SIGNS,
  'movers': [
    {'id': 'crane', 'p': CR_P, 'to': CR_TO, 's': [3, 2.5, 60], 'period': CRANE_RUN, 'mat': 'block', 'trim': 'amber'},
    {'id': 'cradle', 'p': CD_P, 'to': CD_TO, 's': [4.4, 0.6, 4.4], 'period': CRANE_RUN, 'mat': 'dark', 'trim': 'amber'},
