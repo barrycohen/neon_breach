@@ -111,7 +111,10 @@ levels_js = "const EMBEDDED_LEVELS = " + _json.dumps(_levels, separators=(",", "
 
 js = "(function(){\n'use strict';\n" + levels_js + "\n\n".join(chunks) + "\n})();\n"
 
-# ---- strip the dev-tool call sites, then check nothing of them survived ----
+# ---- development mode off: no URL flags, no dev tools ----
+if js.count("const DEV=true;") != 1:
+    sys.exit("build failed: util.js's `const DEV=true;` not found exactly once")
+js = js.replace("const DEV=true;", "const DEV=false;")
 import re as _re
 js = _re.sub(r"^\s*initDevTools\(\);.*$", "", js, flags=_re.M)
 for _name in ("initDevTools", "devtools", "GOD: ON", "1-SHOT", "devpanel"):

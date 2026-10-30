@@ -16,7 +16,7 @@
    runs it with the `authority` action: `do: 'haul'` (up the Well to the crown)
    or `'fall'` (beaten: back down the Well). The fight itself is the boss
    `authority` (enemies.js), a record this module runs (PROXY). */
-import {THREE,V3,clamp,lerp,rand,T2} from './util.js';
+import {THREE,V3,clamp,lerp,rand,T2,devFlag} from './util.js';
 import {scene} from './render.js';
 import {colliders,own,rayBox} from './world.js';
 import {player,damagePlayer} from './player.js';
@@ -531,4 +531,4 @@ function authoritySnap(){ return AU?(AU.st==='rise'?'up':AU.st==='fall'?'down':A
 function authorityRestore(st){ if(AU&&st&&st!==AU.st) auPlace(st); else if(AU&&st==='up'){ for(const p of AU.plates) mendPlate(p); } }
 
 export {addAuthority, updateAuthority, authorityAction, authoritySnap, authorityRestore};
-if(location.hash.indexOf('debug')>=0) window.__au=()=>AU;
+if(devFlag(/debug/)) window.__au=()=>AU;

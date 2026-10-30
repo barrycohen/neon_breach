@@ -1,4 +1,4 @@
-import {THREE,V3,clamp,rand,T2} from './util.js';
+import {THREE,V3,clamp,rand,T2,devFlag} from './util.js';
 import {game,enemies,bullets,pickups,anchors,conduits,pylons,storms,breaches,moltens,holes,voids,levelFlags} from './state.js';
 import {scene,camera,setViewModelHidden} from './render.js';
 import {MAT,sprite,cnv} from './textures.js';
@@ -2179,7 +2179,7 @@ function unloadLevel(){
    in the level marked when:[slot, [items]] is kept only where that slot drew one
    of those items, and a piece with deal:slot takes the `do` its draw names in
    its `dos`. `#deal=0` in the URL deals in the order written (for testing). */
-const DEAL_FIXED=/[#&]deal=0/.test(location.hash);
+const DEAL_FIXED=devFlag(/[#&]deal=0/);
 function dealLevel(def){
   if(!def.shuffle) return def;
   const drawn={};

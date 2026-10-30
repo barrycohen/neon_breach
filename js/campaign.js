@@ -1,4 +1,4 @@
-import {$,store} from './util.js';
+import {$,store,devFlag} from './util.js';
 import {game} from './state.js';
 import {level,loadLevel} from './level.js';
 import {player} from './player.js';
@@ -64,7 +64,7 @@ function loadProgress(){
 function saveProgress(){ store.set('nb_campaign',JSON.stringify(progress)); }
 // #unlock opens every level in the picker without touching saved progress, so
 // a late level can be tested from a browser session that has cleared storage.
-const UNLOCK_ALL=/[#&]unlock/.test(location.hash);
+const UNLOCK_ALL=devFlag(/[#&]unlock/);
 function isUnlocked(i){ return UNLOCK_ALL || i===0 || !!progress.done[CAMPAIGN[i-1].id]; }
 function fmtTime(t){ t=Math.max(0,Math.floor(t)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
 

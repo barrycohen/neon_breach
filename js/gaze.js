@@ -44,7 +44,7 @@
    is only the beam you see in the air. It is aimed at the floor - pieces marked
    `walk`, and platforms - never at cover, or it would jump up onto every post
    it passed. */
-import {THREE,V3,clamp,rand,T2} from './util.js';
+import {THREE,V3,clamp,rand,T2,devFlag} from './util.js';
 import {scene} from './render.js';
 import {sprite} from './textures.js';
 import {own,groundAt,hasGroundAt,rayWorld,raySphere,colliders,balls,ENEMY_BOXES} from './world.js';
@@ -764,5 +764,5 @@ PROXY.eye={
   }
 };
 
-if(location.hash.indexOf("debug")>=0) window.__gazeBeamClear=(h,x,z)=>beamClear(h,x,z);
+if(devFlag(/debug/)) window.__gazeBeamClear=(h,x,z)=>beamClear(h,x,z);
 export {shutEye, addGaze, updateGaze, resetGazeTold, gazeCfg, setGaze, clearPods, throwPod};

@@ -39,8 +39,16 @@ CDN). It has to be served rather than opened from disk:
 python3 tools/serve.py          # then open http://127.0.0.1:8099
 ```
 
-`#level=act2-1` in the URL jumps straight to a level, and `#unlock` opens every
-level in the campaign picker.
+Run from source, the game is in development mode, with tools for testing
+changes:
+
+- **F2** opens a dev panel: teleport to any checkpoint, key, door or core, god
+  mode, one-shot kills, and every key and weapon.
+- `#level=act2-1` in the URL jumps straight to a level.
+- `#unlock` opens every level in the campaign picker.
+- `#debug` exposes the game's internals on `window` for scripted tests.
+
+The built game leaves all of this out.
 
 ## Build
 

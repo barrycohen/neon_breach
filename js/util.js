@@ -2,6 +2,13 @@ export const THREE=window.THREE;
 
 /* Small helpers and the THREE seam. Imported by everything; imports nothing. */
 
+/* Development mode: true when the game runs from its source files. build.py
+   sets it false in the published build, which then ignores every URL flag
+   (#level, #unlock, #debug, #deal) as well as leaving out the dev tools. */
+const DEV=true;
+// a URL flag, honoured in development only
+const devFlag=re=>DEV&&re.test(location.hash);
+
 const T2=Math.PI*2, R90=Math.PI/2;
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
@@ -15,4 +22,4 @@ const store={
   set(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 };
 
-export {T2, R90, $, clamp, lerp, rand, rint, pick, V3, store};
+export {DEV, devFlag, T2, R90, $, clamp, lerp, rand, rint, pick, V3, store};

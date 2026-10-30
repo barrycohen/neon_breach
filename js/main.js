@@ -1,5 +1,5 @@
 /* Neon Breach - entry point: wires the modules together and drives the frame loop. */
-import {THREE,$,clamp,lerp,rand,store} from './util.js';
+import {DEV,devFlag,THREE,$,clamp,lerp,rand,store} from './util.js';
 import {game,marks,enemies,bullets,pickups,anchors} from './state.js';
 import {renderer,scene,camera,vmCam,draw,BASE_FOV,BLOOM,BLOOM_OK,SHADOWS} from './render.js';
 import {MAT} from './textures.js';
@@ -24,7 +24,7 @@ import {initDevTools} from './devtools.js';
 
 /* World selection. Endless mode builds the arena; #level=<id> loads a level
    directly instead (the campaign screen loads them the same way). */
-const levelParam=/[#&]level=([\w-]+)/.exec(location.hash);
+const levelParam=DEV?/[#&]level=([\w-]+)/.exec(location.hash):null;
 if(levelParam){
   // #level=<id> jumps straight into any level, campaign progress ignored. The
   // single-file build has its levels embedded; a served tree fetches them.
@@ -133,7 +133,7 @@ loadAssets((n,report)=>{
   $('assetNote').textContent=report;
 });
 
-if(location.hash.indexOf('debug')>=0){
+if(devFlag(/debug/)){
   const ex=document.createElement('script');
   ex.src='https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js';
   document.head.appendChild(ex);

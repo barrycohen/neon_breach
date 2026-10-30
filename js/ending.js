@@ -19,7 +19,7 @@
      endAng    where the camera stops: its bearing from `around` (0: south)
      stations  [[x,y,z], ...] where each station hangs, dark till its core comes
      spans     actions run as the spans go out (the level's own platforms) */
-import {THREE,V3,clamp,lerp,T2} from './util.js';
+import {THREE,V3,clamp,lerp,T2,devFlag} from './util.js';
 import {scene,camera,setViewModelHidden} from './render.js';
 import {own} from './world.js';
 import {player} from './player.js';
@@ -332,4 +332,4 @@ function endEnding(){
 }
 
 export {addEnding, startEnding, updateEnding, spinCores, endEnding};
-if(location.hash.indexOf('debug')>=0){ window.__en=()=>EN; window.__enUpd=updateEnding; window.__form=()=>EN_FORM; }
+if(devFlag(/debug/)){ window.__en=()=>EN; window.__enUpd=updateEnding; window.__form=()=>EN_FORM; }
