@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Bundle the game into a deployable folder.
 
-  dist/index.html    the whole game in one page: scripts, styles and levels
+  dist/index.html    the whole game in one page: scripts (Three.js included),
+                     styles and levels
   dist/assets/       the optional glTF models it loads beside it
 
 dist/ is what gets published (GitHub Pages deploys it). index.html also runs
@@ -131,6 +132,18 @@ for needle in (link, script):
 
 bundled = html.replace(link, "<style>\n" + css + "</style>")
 bundled = bundled.replace(script, "<script>\n" + js + "</script>")
+
+# ---- Three.js inlined too: the published game loads nothing from a CDN ----
+VENDOR_RE = re.compile(r'<script src="(vendor/[\w/.-]+\.js)"></script>')
+def inline_vendor(m):
+    code = (root / m.group(1)).read_text()
+    # inside a <script> element, "</script" would end it early
+    return "<script>\n" + code.replace("</script", "<\\/script") + "\n</script>"
+bundled, n = VENDOR_RE.subn(inline_vendor, bundled)
+if n == 0:
+    sys.exit("build failed: no vendor/ scripts found in index.html")
+if re.search(r'<script[^>]+src=', bundled):
+    sys.exit("build failed: a <script src> survived bundling - the build must be self-contained")
 
 dist = root / "dist"
 if dist.exists():

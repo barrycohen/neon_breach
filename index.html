@@ -157,15 +157,58 @@
 
 <div id="loading">INITIALIZING GRID</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/MaskPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+/* If the game fails to start, the loading screen would otherwise stay up with
+   no explanation. This watches the start-up and, if the game never takes the
+   screen down, says why in place of it. Plain old JavaScript, so it still runs
+   in a browser too old for the game itself. */
+(function(){
+  var firstError=null, syntaxError=false, missing=null;
+  window.addEventListener('error',function(e){
+    var t=e.target;
+    if(t&&t.tagName==='SCRIPT'){ if(!missing) missing=t.getAttribute('src'); return; }
+    if(!e.message) return;
+    if(!firstError) firstError=e.message;
+    if(e.error instanceof SyntaxError||/SyntaxError/.test(e.message)) syntaxError=true;
+  },true);
+  function webgl(){
+    try{
+      var c=document.createElement('canvas');
+      return !!(c.getContext('webgl2')||c.getContext('webgl')||c.getContext('experimental-webgl'));
+    }catch(e){ return false; }
+  }
+  window.addEventListener('load',function(){
+    var el=document.getElementById('loading');
+    if(!el||el.className.indexOf('hidden')>=0) return;      // started fine
+    var why;
+    if(syntaxError)
+      why='This browser is too old to run the game. Try an up-to-date Chrome, Firefox, Edge or Safari.';
+    else if(missing&&location.protocol==='file:')
+      why='The browser won\'t load the game\'s files from disk. Run python3 tools/serve.py and open http://127.0.0.1:8099.';
+    else if(missing)
+      why='Couldn\'t load '+missing+'. Check your connection and reload.';
+    else if(!window.THREE)
+      why='Couldn\'t load Three.js. Check your connection and reload.';
+    else if(!webgl())
+      why='WebGL isn\'t available. Turn on hardware acceleration in your browser\'s settings, or try another browser.';
+    else
+      why='The game hit an error while starting. Try reloading, or another browser.';
+    el.className='failed';
+    el.innerHTML='<b>GRID FAILED TO START</b><p></p><small></small>';
+    el.querySelector('p').textContent=why;
+    el.querySelector('small').textContent=firstError||'';
+  });
+})();
+</script>
+<script src="vendor/three/three.min.js"></script>
+<script src="vendor/three/CopyShader.js"></script>
+<script src="vendor/three/LuminosityHighPassShader.js"></script>
+<script src="vendor/three/EffectComposer.js"></script>
+<script src="vendor/three/RenderPass.js"></script>
+<script src="vendor/three/ShaderPass.js"></script>
+<script src="vendor/three/MaskPass.js"></script>
+<script src="vendor/three/UnrealBloomPass.js"></script>
+<script src="vendor/three/GLTFLoader.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

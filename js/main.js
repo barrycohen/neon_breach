@@ -135,7 +135,7 @@ loadAssets((n,report)=>{
 
 if(devFlag(/debug/)){
   const ex=document.createElement('script');
-  ex.src='https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js';
+  ex.src='vendor/three/GLTFExporter.js';
   document.head.appendChild(ex);
   window.__nb={game,player,enemies,bullets,pickups,marks,WEAPONS,colliders,
     beginRun,startWave,makeEnemy,killEnemy,enemyShoot,updateEnemies,updateBullets,damagePlayer,fire,selectWeapon,hud,FX,SFX,
